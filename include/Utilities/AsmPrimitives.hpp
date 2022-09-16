@@ -14,6 +14,7 @@
 
 #include "GlobalDefines.hpp"
 
+/* don't need these anymore for DMA on ARM
 [[gnu::unused]] static inline __attribute__((always_inline)) void clflush(volatile void *p) {
   asm volatile("clflush (%0)\n"::"r"(p)
   : "memory");
@@ -30,41 +31,55 @@
 
 #endif
 }
+*/
 
+/* not used
 [[gnu::unused]] static inline __attribute__((always_inline)) void cpuid() {
   asm volatile("cpuid"::
   : "rax", "rbx", "rcx", "rdx");
 }
+*/
 
 [[gnu::unused]] static inline __attribute__((always_inline)) void mfence() {
-  asm volatile("mfence"::
-  : "memory");
+  asm volatile("dmb ish"
+              :
+              :
+              : "memory");
 }
 
+/* not used
 [[gnu::unused]] static inline __attribute__((always_inline)) void sfence() {
-  asm volatile("sfence"::
-  : "memory");
+  asm volatile("sfence"
+              :
+              :
+              : "memory");
 }
+*/
 
 [[gnu::unused]] static inline __attribute__((always_inline)) void lfence() {
-  asm volatile("lfence"::
-  : "memory");
+  asm volatile("dsb sy"
+              :
+              :
+              : "memory");
 }
 
 [[gnu::unused]] static inline __attribute__((always_inline)) uint64_t rdtscp() {
-  uint64_t lo, hi;
-  asm volatile("rdtscp\n"
-  : "=a"(lo), "=d"(hi)::"%rcx");
-  return (hi << 32UL) | lo;
+  uint64_t t1;
+  asm volatile("mrs %0, cntvct_el0"
+              : "=r"(t1));
+  return t1;
 }
 
+/* not used
 [[gnu::unused]] static inline __attribute__((always_inline)) uint64_t rdtsc() {
   uint64_t lo, hi;
   asm volatile("rdtsc\n"
   : "=a"(lo), "=d"(hi)::"%rcx");
   return (hi << 32UL) | lo;
 }
+*/
 
+// not used
 [[gnu::unused]] static inline __attribute__((always_inline)) uint64_t realtime_now() {
   struct timespec now_ts{};
   clock_gettime(CLOCK_MONOTONIC, &now_ts);
