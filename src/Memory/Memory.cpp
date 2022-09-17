@@ -8,6 +8,7 @@ void Memory::allocate_memory(size_t mem_size) {
   volatile char *target = nullptr;
   FILE *fp;
 
+  /*
   if (superpage) {
     // allocate memory using super pages
     fp = fopen(hugetlbfs_mountpoint.c_str(), "w+");
@@ -32,6 +33,10 @@ void Memory::allocate_memory(size_t mem_size) {
     Logger::log_info("Waiting for khugepaged.");
     sleep(10);
   }
+  */
+  sh_init();
+  sh_alloc(this->size, &(this->mem));
+  target = (volatile char *)(this->mem.vAddr);
 
   if (target!=start_address) {
     Logger::log_error(format_string("Could not create mmap area at address %p, instead using %p.",
@@ -205,10 +210,14 @@ Memory::Memory(bool use_superpage) : size(0), superpage(use_superpage) {
 }
 
 Memory::~Memory() {
+  /*
   if (munmap((void *) start_address, size)==-1) {
     Logger::log_error("munmap failed with error:");
     Logger::log_data(std::strerror(errno));
   }
+  */
+  sh_dealloc(&(this->mem));
+  sh_fini();
 }
 
 volatile char *Memory::get_starting_address() const {
