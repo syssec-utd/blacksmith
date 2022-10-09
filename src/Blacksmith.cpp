@@ -41,7 +41,8 @@ int check_cpu() {
       "i7-8086",
       "i7-8700",
       "i7-9700",
-      "i7-9900"
+      "i7-9900",
+      "" // let it run on the raspberry pi
   };
 
   bool cpu_supported = false;

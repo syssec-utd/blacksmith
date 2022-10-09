@@ -13,7 +13,7 @@ set(
 
 set(
         BLACKSMITH_ENABLE_JITTING
-        ON
+        OFF
         CACHE BOOL
         "Use the asmjit library to jit the hammering code."
         FORCE
